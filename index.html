@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <title>Kano Wand MakeCode Canvas</title>
-  <!-- Load Google Blockly via CDN -->
-  <script src="https://unpkg.com"></script>
+  <!-- Load Google Blockly Core Library -->
+  <script src="https://unpkg.com/blockly/blockly.min.js"></script>
+  <!-- Load the Default Block Visual Layouts -->
+  <script src="https://unpkg.com/blockly/blocks_compressed.js"></script>
   <style>
     body {
       margin: 0;
@@ -24,8 +26,8 @@
       border-bottom: 2px solid #3d3d5c;
     }
     h1 { margin: 0; font-size: 1.5rem; color: #a29bfe; }
-    #main-container { display: flex; flex: 1; }
-    #blocklyDiv { flex: 1; height: 100%; }
+    #main-container { display: flex; flex: 1; height: calc(100vh - 60px); }
+    #blocklyDiv { flex: 1; height: 100%; width: 100%; }
     #preview-panel {
       width: 320px;
       background-color: #1a1a26;
@@ -63,7 +65,7 @@
     </div>
   </div>
 
-  <!-- Define the blocks available in the sidebar toolbox -->
+  <!-- Define categories explicitly using Blockly's updated structure -->
   <xml id="toolbox" style="display: none">
     <category name="Events" colour="#5b67a5">
       <block type="wand_on_button"></block>
@@ -76,4 +78,3 @@
   <script src="app.js"></script>
 </body>
 </html>
-
