@@ -1,8 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // 1. Force initialize the Python generator object to fix the crash
-  Blockly.Python = new Blockly.Generator('Python');
-
-  // 2. Define the Visual Blocks
+  
+  // 1. Define Visual Custom Block Shapes
   Blockly.Blocks['wand_on_button'] = {
     init: function() {
       this.appendDummyInput().appendField("When wand button is pressed");
@@ -22,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // 3. Define the Python Code Generators for the blocks
+  // 2. Map Block Rules straight to Python strings
   Blockly.Python['wand_on_button'] = function(block) {
     const statements_do = Blockly.Python.statementToCode(block, 'DO');
     return `def on_button(self, pressed):\n  if pressed:\n${statements_do || '    pass\n'}`;
@@ -34,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return `    self.set_led_async("${colorMap[dropdown_color]}")\n`;
   };
 
-  // 4. Inject the Workspace layout into the page
+  // 3. Inject the clean Workspace layout canvas
   const workspace = Blockly.inject('blocklyDiv', {
     toolbox: document.getElementById('toolbox'),
     grid: {spacing: 20, length: 3, colour: '#444', snap: true},
@@ -42,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
     media: 'https://unpkg.com'
   });
 
-  // 5. Update the live terminal output whenever blocks move
+  // 4. Update the live preview panel automatically
   workspace.addChangeListener(() => {
     try {
       const pythonCode = Blockly.Python.workspaceToCode(workspace);
@@ -55,13 +53,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 6. Connect the "Run Code" Button to your Raspberry Pi
+  // 5. Build the network trigger out to the local Pi Server
   document.getElementById('runBtn').addEventListener('click', () => {
-    // !!! CHANGE THIS TO YOUR RASPBERRY PI'S IP ADDRESS !!!
+    // Put your Raspberry Pi's local network IP here
     const PI_IP_ADDRESS = "192.168.1.100"; 
     
     const generatedCode = Blockly.Python.workspaceToCode(workspace);
-
     if (!generatedCode) {
       alert("Drag some blocks onto the canvas first!");
       return;
@@ -75,13 +72,13 @@ document.addEventListener("DOMContentLoaded", () => {
     .then(res => res.json())
     .then(data => {
       if(data.status === "success") {
-        alert("✨ Magic compiled successfully! Click your wand button to test.");
+        alert("✨ Magic compiled! Click your wand button to run.");
       } else {
         alert("❌ Error: " + data.message);
       }
     })
     .catch(err => {
-      alert("Could not connect to Raspberry Pi server. Check your IP address!");
+      alert("Could not talk to the Pi! Make sure server.py is running on the Pi and your IP is correct.");
       console.error(err);
     });
   });
