@@ -4,15 +4,10 @@
   <meta charset="UTF-8">
   <title>Kano Wand MakeCode Canvas</title>
   
-  <!-- 1. Core Engine Packages -->
-  <script src="https://unpkg.com"></script>
-  <script src="https://unpkg.com"></script>
-  
-  <!-- 2. Language Compilers (Crucial Loading Order) -->
-  <script src="https://unpkg.com"></script>
-  <script src="https://unpkg.com"></script>
-  <script src="https://unpkg.com"></script>
-  
+  <!-- 1. Load Google Blockly Core Library -->
+  <script src="https://cloudflare.com"></script>
+</head>
+<body>
   <style>
     body {
       margin: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif;
@@ -35,8 +30,6 @@
     }
     button:hover { background-color: #5b4bc4; }
   </style>
-</head>
-<body>
 
   <header>
     <h1>🪄 Kano Wand MakeCode Studio</h1>
@@ -51,7 +44,7 @@
     </div>
   </div>
 
-  <!-- Define categories explicitly using Blockly's required structural nodes -->
+  <!-- Toolbox Setup -->
   <xml id="toolbox" style="display: none">
     <category name="Events" colour="#5b67a5">
       <block type="wand_on_button"></block>
@@ -61,6 +54,108 @@
     </category>
   </xml>
 
-  <script src="app.js"></script>
+  <!-- All JavaScript is placed right here at the bottom of the body -->
+  <script>
+    // Force a 500ms delay to make sure the cdnjs script is fully registered in memory
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        if (typeof Blockly === 'undefined') {
+          alert("Blockly framework failed to load from CDN. Check your internet connection!");
+          return;
+        }
+
+        // 1. Define Visual Custom Block Shapes
+        Blockly.Blocks['wand_on_button'] = {
+          init: function() {
+            this.appendDummyInput().appendField("When wand button is pressed");
+            this.appendStatementInput("DO").setCheck(null).appendField("do");
+            this.setColour(230);
+          }
+        };
+
+        Blockly.Blocks['wand_set_led'] = {
+          init: function() {
+            this.appendDummyInput()
+                .appendField("Set wand light to")
+                .appendField(new Blockly.FieldDropdown([["Red","RED"], ["Blue","BLUE"], ["Green","GREEN"], ["Gold","GOLD"]]), "COLOR");
+            this.setPreviousStatement(true, null);
+            this.setNextStatement(true, null);
+            this.setColour(120);
+          }
+        };
+
+        // 2. Initialize the Python Generator engine manually
+        const PythonGenerator = new Blockly.Generator('Python');
+        PythonGenerator.scrub_ = function(block, code, thisOnly) {
+          const nextBlock = block.getNextBlock();
+          const nextCode = nextBlock && !thisOnly ? PythonGenerator.blockToCode(nextBlock) : '';
+          return code + nextCode;
+        };
+
+        // 3. Map Block Rules straight to Python strings
+        PythonGenerator['wand_on_button'] = function(block) {
+          const statements_do = PythonGenerator.statementToCode(block, 'DO');
+          return `def on_button(self, pressed):\n  if pressed:\n${statements_do || '    pass\n'}`;
+        };
+
+        PythonGenerator['wand_set_led'] = function(block) {
+          const dropdown_color = block.getFieldValue('COLOR');
+          const colorMap = { 'RED': '#FF0000', 'BLUE': '#0000FF', 'GREEN': '#00FF00', 'GOLD': '#FFD700' };
+          return `    self.set_led_async("${colorMap[dropdown_color]}")\n`;
+        };
+
+        // 4. Inject the clean Workspace layout canvas
+        const workspace = Blockly.inject('blocklyDiv', {
+          toolbox: document.getElementById('toolbox'),
+          grid: {spacing: 20, length: 3, colour: '#444', snap: true},
+          trashcan: true,
+          media: 'https://cloudflare.com'
+        });
+
+        // 5. Update the live preview panel automatically
+        workspace.addChangeListener(() => {
+          try {
+            const pythonCode = PythonGenerator.workspaceToCode(workspace);
+            const outputWindow = document.getElementById('outputCode');
+            outputWindow.value = pythonCode.trim() === "" 
+              ? "# Drag and drop blocks here to see Python compilation..." 
+              : pythonCode;
+          } catch (error) {
+            console.error("Compilation error:", error);
+          }
+        });
+
+        // 6. Build the network trigger out to the local Pi Server
+        document.getElementById('runBtn').addEventListener('click', () => {
+          const PI_IP_ADDRESS = "192.168.1.100"; // Replace with your Pi's IP address
+          const generatedCode = PythonGenerator.workspaceToCode(workspace);
+          
+          if (!generatedCode) {
+            alert("Drag some blocks onto the canvas first!");
+            return;
+          }
+
+          fetch(`http://${PI_IP_ADDRESS}:5000/run-code`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code: generatedCode })
+          })
+          .then(res => res.json())
+          .then(data => {
+            if(data.status === "success") {
+              alert("✨ Magic compiled! Click your wand button to run.");
+            } else {
+              alert("❌ Error: " + data.message);
+            }
+          })
+          .catch(err => {
+            alert("Could not talk to the Pi! Make sure server.py is running on the Pi.");
+            console.error(err);
+          });
+        });
+
+      }, 500);
+    });
+  </script>
 </body>
 </html>
