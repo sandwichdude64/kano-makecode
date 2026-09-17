@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <title>Kano Wand MakeCode Canvas</title>
+  
   <!-- 1. Core Engine Packages -->
   <script src="https://unpkg.com"></script>
   <script src="https://unpkg.com"></script>
   
-  <!-- 2. Language Compilers (Crucial Setup Order) -->
+  <!-- 2. Language Compilers (Crucial Loading Order) -->
   <script src="https://unpkg.com"></script>
   <script src="https://unpkg.com"></script>
   <script src="https://unpkg.com"></script>
@@ -50,6 +51,7 @@
     </div>
   </div>
 
+  <!-- Define categories explicitly using Blockly's required structural nodes -->
   <xml id="toolbox" style="display: none">
     <category name="Events" colour="#5b67a5">
       <block type="wand_on_button"></block>
