@@ -3,53 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <title>Kano Wand MakeCode Canvas</title>
-  <!-- Load Google Blockly Core Library -->
-  <script src="https://unpkg.com/blockly/blockly_compressed.js"></script>
-  <!-- Load the Default Block Visual Layouts -->
-  <script src="https://unpkg.com/blockly/blocks_compressed.js"></script>
-  <!-- Load the Python Translation Engine -->
+  <!-- 1. Core Engine Packages -->
   <script src="https://unpkg.com"></script>
-  <!-- Load English Language Files -->
-  <script src="https://unpkg.com/blockly/msg/en.js"></script>
+  <script src="https://unpkg.com"></script>
+  
+  <!-- 2. Language Compilers (Crucial Setup Order) -->
+  <script src="https://unpkg.com"></script>
+  <script src="https://unpkg.com"></script>
+  <script src="https://unpkg.com"></script>
+  
   <style>
     body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: #1e1e2f;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
+      margin: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #1e1e2f; color: #fff; display: flex; flex-direction: column; height: 100vh;
     }
     header {
-      background-color: #2d2d44;
-      padding: 10px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 2px solid #3d3d5c;
+      background-color: #2d2d44; padding: 10px 20px; display: flex;
+      justify-content: space-between; align-items: center; border-bottom: 2px solid #3d3d5c;
     }
     h1 { margin: 0; font-size: 1.5rem; color: #a29bfe; }
     #main-container { display: flex; flex: 1; height: calc(100vh - 60px); }
     #blocklyDiv { flex: 1; height: 100%; width: 100%; }
     #preview-panel {
-      width: 320px;
-      background-color: #1a1a26;
-      border-left: 2px solid #3d3d5c;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
+      width: 320px; background-color: #1a1a26; border-left: 2px solid #3d3d5c;
+      padding: 20px; display: flex; flex-direction: column; gap: 15px;
     }
     button {
-      background-color: #6c5ce7;
-      color: white;
-      border: none;
-      padding: 12px;
-      border-radius: 6px;
-      font-size: 1rem;
-      cursor: pointer;
-      font-weight: bold;
+      background-color: #6c5ce7; color: white; border: none; padding: 12px;
+      border-radius: 6px; font-size: 1rem; cursor: pointer; font-weight: bold;
     }
     button:hover { background-color: #5b4bc4; }
   </style>
@@ -69,7 +50,6 @@
     </div>
   </div>
 
-  <!-- Define categories explicitly using Blockly's structural specifications -->
   <xml id="toolbox" style="display: none">
     <category name="Events" colour="#5b67a5">
       <block type="wand_on_button"></block>
