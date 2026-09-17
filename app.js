@@ -1,7 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // Setup the Blockly Python Generator tool
-  const Python = Blockly.Python;
-
   // 1. Define the Visual Blocks
   Blockly.Blocks['wand_on_button'] = {
     init: function() {
@@ -23,12 +20,12 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // 2. Define the Python Code Generators for the blocks
-  Python['wand_on_button'] = function(block) {
-    const statements_do = Python.statementToCode(block, 'DO');
+  Blockly.Python['wand_on_button'] = function(block) {
+    const statements_do = Blockly.Python.statementToCode(block, 'DO');
     return `def on_button(self, pressed):\n  if pressed:\n${statements_do || '    pass\n'}`;
   };
 
-  Python['wand_set_led'] = function(block) {
+  Blockly.Python['wand_set_led'] = function(block) {
     const dropdown_color = block.getFieldValue('COLOR');
     const colorMap = { 'RED': '#FF0000', 'BLUE': '#0000FF', 'GREEN': '#00FF00', 'GOLD': '#FFD700' };
     return `    self.set_led_async("${colorMap[dropdown_color]}")\n`;
@@ -45,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 4. Update the live terminal output whenever blocks move
   workspace.addChangeListener(() => {
     try {
-      const pythonCode = Python.workspaceToCode(workspace);
+      const pythonCode = Blockly.Python.workspaceToCode(workspace);
       const outputWindow = document.getElementById('outputCode');
       outputWindow.value = pythonCode.trim() === "" 
         ? "# Drag and drop blocks here to see Python compilation..." 
