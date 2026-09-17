@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   
-  // 1. Define Visual Custom Block Shapes
+  // 1. Define Custom Block Layout UI
   Blockly.Blocks['wand_on_button'] = {
     init: function() {
       this.appendDummyInput().appendField("When wand button is pressed");
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // 2. Map Block Rules straight to Python strings
+  // 2. Map Block Actions to Python Output Code
   Blockly.Python['wand_on_button'] = function(block) {
     const statements_do = Blockly.Python.statementToCode(block, 'DO');
     return `def on_button(self, pressed):\n  if pressed:\n${statements_do || '    pass\n'}`;
@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return `    self.set_led_async("${colorMap[dropdown_color]}")\n`;
   };
 
-  // 3. Inject the clean Workspace layout canvas
+  // 3. Inject the Core Workspace Canvas
   const workspace = Blockly.inject('blocklyDiv', {
     toolbox: document.getElementById('toolbox'),
     grid: {spacing: 20, length: 3, colour: '#444', snap: true},
@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
     media: 'https://unpkg.com'
   });
 
-  // 4. Update the live preview panel automatically
+  // 4. Update the preview terminal when a block moves
   workspace.addChangeListener(() => {
     try {
       const pythonCode = Blockly.Python.workspaceToCode(workspace);
@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 5. Build the network trigger out to the local Pi Server
   document.getElementById('runBtn').addEventListener('click', () => {
-    // Put your Raspberry Pi's local network IP here
+    // !!! CHANGE THIS TO YOUR RASPBERRY PI'S IP ADDRESS !!!
     const PI_IP_ADDRESS = "192.168.1.100"; 
     
     const generatedCode = Blockly.Python.workspaceToCode(workspace);
