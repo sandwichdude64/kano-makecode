@@ -4,9 +4,13 @@
   <meta charset="UTF-8">
   <title>Kano Wand MakeCode Canvas</title>
   <!-- Load Google Blockly Core Library -->
-  <script src="https://unpkg.com/blockly/blockly.min.js"></script>
+  <script src="https://unpkg.com/blockly/blockly_compressed.js"></script>
   <!-- Load the Default Block Visual Layouts -->
   <script src="https://unpkg.com/blockly/blocks_compressed.js"></script>
+  <!-- Load the Python Translation Engine -->
+  <script src="https://unpkg.com"></script>
+  <!-- Load English Language Files -->
+  <script src="https://unpkg.com/blockly/msg/en.js"></script>
   <style>
     body {
       margin: 0;
@@ -65,7 +69,7 @@
     </div>
   </div>
 
-  <!-- Define categories explicitly using Blockly's updated structure -->
+  <!-- Define categories explicitly using Blockly's structural specifications -->
   <xml id="toolbox" style="display: none">
     <category name="Events" colour="#5b67a5">
       <block type="wand_on_button"></block>
